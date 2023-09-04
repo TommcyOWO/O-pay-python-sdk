@@ -8,13 +8,15 @@ class AIO:
         self.form_dict = form_dict
         
     # 產生檢查碼
-    def get_mac_value(self):
+    def get_check_mac_value(self):
         encode_str = f"HashKey={self.hash_key}"
-        for key, value in self.form_dict.items():
+        # 排序参数
+        sorted_items = sorted(self.form_dict.items(), key=lambda x: x[0])
+        for key, value in sorted_items:
             encode_str += f"&{key}={value}"
         encode_str += f"&HashIV={self.hash_iv}"
         encode_str = urllib.parse.quote(encode_str.lower(), safe='')
-        encode_str = self.replace_char(encode_str)
+        encode_str = self.replace_special_chars(encode_str)
         return hashlib.md5(encode_str.encode()).hexdigest()
     
     # 特殊字元置換
@@ -24,11 +26,3 @@ class AIO:
         for search, replace in zip(search_list, replace_list):
             value = value.replace(search, replace)
         return value
-    
-    # 仿自然排序法
-    def merchant_sort(self,a, b):
-        return self.strcasecmp(a, b)
-
-    # 仿 strcasecmp 函式
-    def strcasecmp(self,a, b):
-        return (a > b) - (a < b)
