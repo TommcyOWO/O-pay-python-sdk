@@ -2,12 +2,32 @@ import os
 from flask import Flask, render_template, request, redirect, jsonify, redirect, url_for, session
 from zenora import APIClient
 from flask_cors import *
+import hashlib
+import urllib.parse
 import requests
 import asyncio
 import random
 import datetime
 import pytz
 import time
+
+def replace_char(value):
+    search_list = ['%2d', '%5f', '%2e', '%21', '%2a', '%2A', '%28', '%29']
+    replace_list = ['-', '_', '.', '!', '*', '*', '(', ')']
+    for search, replace in zip(search_list, replace_list):
+        value = value.replace(search, replace)
+    return value
+
+# 產生檢查碼
+def get_mac_value(hash_key, hash_iv, form_dict):
+    encode_str = f"HashKey={hash_key}"
+    sorted_items = sorted(form_dict.items(), key=lambda x: x[0])
+    for key, value in sorted_items:
+        encode_str += f"&{key}={value}"
+    encode_str += f"&HashIV={hash_iv}"
+    encode_str = urllib.parse.quote(encode_str.lower(), safe='')
+    encode_str = replace_char(encode_str)
+    return hashlib.md5(encode_str.encode()).hexdigest()
 
 from pymongo import MongoClient
 import pymongo
@@ -318,22 +338,25 @@ def donate_done():
 
 @app.route('/donate_test')
 def donate_test():
-    if request.method == "GET":
-        now_time = datetime.datetime.now(pytz.timezone("Asia/Taipei")).strftime('%Y-%m-%d %H:%M:%S')
-        timeString = now_time
-        struct_time = time.strptime(timeString, "%Y-%m-%d %H:%M:%S")
-        time_stamp = int(time.mktime(struct_time))
-        headers = {
-            'MerchantID': '2000132',
-            'TimeStamp': f'{time_stamp}',
-            'LoginBackUrl': 'https://rbctw.xyz/donate_test'
-        }
-        url = 'https://login-stage.opay.tw/OpenID/Login'
-        response = requests.post(url, headers=headers)
-        return f"{response}"
-    if request.method == "POST":
-        data = request.get_json()
-        print(data)
+    url = "https://payment.opay.tw/Cashier/AioCheckOut/V5"
+    test_url = "https://payment-stage.opay.tw/Cashier/AioCheckOut/V5"
+    order_data = {
+        "MerchantID": "2000132",  # 商店代號
+        "MerchantTradeNo": "test123456789",  # 訂單編號
+        "MerchantTradeDate": "2023/09/04 14:30:00",  # 訂單日期時間
+        "PaymentType": "aio",  # 付款方式（超商代碼繳費）
+        "TotalAmount": "100",  # 交易金額
+        "TradeDesc": "test",  # 交易描述
+        "ItemName": "testa",  # 商品名稱
+        "ReturnURL": "http://rbctw.xyz/donate_test",  # 交易完成後返回的網址
+        "ChoosePayment": "CVS",  # 選擇超商付款
+        "ClientBackURL": "http://rbctw.xyz/",  # 返回商店的網址
+    }
+    hash_key = 'YourHashKeyHere'
+    hash_iv = 'YourHashIVHere'
+    check_mac_value = get_mac_value(hash_key, hash_iv, order_data)
+    
+    return check_mac_value
 
 @app.route("/logout")
 async def logout():
