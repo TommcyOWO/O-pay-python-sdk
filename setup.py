@@ -3,14 +3,14 @@ with open("README.md", "r",encoding="utf-8") as f:
     long_description = f.read()
     
 setuptools.setup(
-    name = "Tpteropy",
-    version = "0.0.2",
+    name = "O-pay-python-sdk",
+    version = "0.0.1",
     author = "Tomycat",
     author_email="tangminghong.tom@gmail.com",
-    description="簡單存取Pterodactyl api",
+    description="O'pay SDK for python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/TommcyOWO/Tpteropy",                                         
+    url="https://github.com/TommcyOWO/O-pay-python-sdk",                                         
     packages=setuptools.find_packages(),     
     classifiers=[
         "Development Status :: 1 - Planning",

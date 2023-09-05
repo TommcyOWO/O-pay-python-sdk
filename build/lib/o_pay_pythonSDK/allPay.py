@@ -16,22 +16,21 @@ class AllPay():
     def __init__(
         self,ALLPAY_SANDBOX,
         IGNORE,MERCHANT_ID,
-        AIO_SANDBOX_SERVICE_URL,AIO_SERVICE_URL, RETURN_URL,
+        RETURN_URL,
         CLIENT_BACK_URL, PAYMENT_INFO_URL,
-        HASH_IV, HASH_KEY, payment_conf, service_method='post'
+        HASH_IV, HASH_KEY, payment_conf
         ):
         self.url_dict = dict()
 
         # === BASIC CONFIG FOR ALLPAY ===
         self.is_sandbox = ALLPAY_SANDBOX
-        self.service_method = service_method
         self.HASH_KEY = HASH_KEY
         self.HASH_IV = HASH_IV
-        self.service_url = AIO_SANDBOX_SERVICE_URL if self.is_sandbox else AIO_SERVICE_URL
+        self.service_url = "https://payment-stage.opay.tw/Cashier/AioCheckOut/V5" if self.is_sandbox else "https://payment.opay.tw/Cashier/AioCheckOut/V5"
 
         self.url_dict['MerchantID'] = MERCHANT_ID
         self.url_dict['ReturnURL'] = RETURN_URL
-        self.url_dict['IgnorePayment'] =  IGNORE
+        self.url_dict['IgnorePayment'] =  IGNORE if IGNORE != None else 'Credit'
 
         self.url_dict['MerchantTradeNo'] = hashlib.sha224(str(datetime.datetime.now())).hexdigest().upper() if not ('MerchantTradeNo' in payment_conf) else payment_conf['MerchantTradeNo']
         self.url_dict['PaymentType'] = 'aio'
