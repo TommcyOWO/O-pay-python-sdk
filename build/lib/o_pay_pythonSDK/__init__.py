@@ -1,7 +1,3 @@
-__author__ = 'Calvin Jeng'
+# -*- coding: utf-8 -*-
 from .allPay import AllPay
 # Parameter for payment type
-ATM = 'ATM'
-WEB_ATM = 'WebATM'
-CVS = 'CVS'
-BARCODE = 'BARCODE'

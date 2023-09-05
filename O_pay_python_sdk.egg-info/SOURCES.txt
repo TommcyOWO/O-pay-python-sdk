@@ -1,0 +1,7 @@
+LICENSE
+README.md
+setup.py
+O_pay_python_sdk.egg-info/PKG-INFO
+O_pay_python_sdk.egg-info/SOURCES.txt
+O_pay_python_sdk.egg-info/dependency_links.txt
+O_pay_python_sdk.egg-info/top_level.txt

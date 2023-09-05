@@ -1,6 +1,4 @@
-'''
-    utilities method here.
-'''
+# -*- coding: utf-8 -*-
 
 
 def do_str_replace(string, type_check_out=True):
