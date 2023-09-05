@@ -1,10 +1,10 @@
 import setuptools
-with open("README.md", "r",encoding="utf8", errors='ignore') as f:
+with open("README.md", "r",encoding="utf8") as f:
     long_description = f.read()
     
 setuptools.setup(
     name = "O-pay-python-sdk",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Tomycat",
     author_email="tangminghong.tom@gmail.com",
     description="O'pay SDK for python",
